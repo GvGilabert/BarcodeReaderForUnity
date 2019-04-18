@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using ExampleProject;
 using UnityEngine;
 using UnityEngine.UI;
 using ZXing;
@@ -11,10 +12,10 @@ public class Reader : MonoBehaviour
     private WebCamTexture camTexture;
     public Text text;
     public RawImage rawImg;
-    public List<string> codes;
     public GameObject scroll;
-    public InputField inputF;
+    public GameObject inputF;
     public bool reading;
+    public Text btn;
 
     void Start()
     {
@@ -28,6 +29,8 @@ public class Reader : MonoBehaviour
         {
             camTexture.Play();
         }
+        //Get elements from Db and list them
+        ReadDbToScreen();
     }
 
     void Update()
@@ -43,11 +46,8 @@ public class Reader : MonoBehaviour
                 if (result != null)
                 {
                     text.text = result.Text;
-                    codes.Add(result.Text);
-                    InputField go = Instantiate(inputF, scroll.transform);
-                    go.text = result.Text;
-                    reading = false;
-                    codes.Add(result.Text);
+                    SwitchBtn();
+                    ExampleDB.instance.InsertCodes(result.BarcodeFormat.ToString(),result.Text);
                 }
             }
             catch (System.Exception ex)
@@ -57,9 +57,22 @@ public class Reader : MonoBehaviour
         }
     }
 
-    public void SwitchBtn(Text btn)
+    public void SwitchBtn()
     {
         reading = !reading;
         btn.text = (btn.text == "READ") ? "STOP" : "READ";
     }
+
+    public void ReadDbToScreen()
+    {
+        var data = ExampleDB.instance.GetCodes(50);
+        for (int i = 0; i < data.GetLength(0); i++)
+        {
+            GameObject go = Instantiate(inputF, scroll.transform);
+            go.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = data[i, 1];
+            go.transform.GetChild(1).GetComponent<Text>().text = data[i, 0];
+        }
+    }
+    
 }
+
