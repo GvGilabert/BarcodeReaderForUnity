@@ -18,15 +18,11 @@ namespace ExampleProject
                 Destroy(this.gameObject);
             else
                 instance = this;
-        }
-        
 
-        private void Start()
-        {
             dbPath = "URI=file:" + Application.persistentDataPath + "/CodesDatabase.db";
             CreateSchema();
         }
-
+        
         public void CreateSchema()
         {
             using (var conn = new SqliteConnection(dbPath))

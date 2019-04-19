@@ -9,7 +9,7 @@ using ZXing.QrCode;
 public class Reader : MonoBehaviour
 {
 
-    private WebCamTexture camTexture;
+    public WebCamTexture camTexture;
     public Text text;
     public RawImage rawImg;
     public GameObject scroll;
@@ -48,6 +48,7 @@ public class Reader : MonoBehaviour
                     text.text = result.Text;
                     SwitchBtn();
                     ExampleDB.instance.InsertCodes(result.BarcodeFormat.ToString(),result.Text);
+                    ReadDbToScreen();
                 }
             }
             catch (System.Exception ex)
@@ -65,6 +66,10 @@ public class Reader : MonoBehaviour
 
     public void ReadDbToScreen()
     {
+        foreach (Transform item in scroll.transform)
+        {
+            Destroy(item.gameObject);
+        }
         var data = ExampleDB.instance.GetCodes(50);
         for (int i = 0; i < data.GetLength(0); i++)
         {
@@ -72,6 +77,11 @@ public class Reader : MonoBehaviour
             go.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = data[i, 1];
             go.transform.GetChild(1).GetComponent<Text>().text = data[i, 0];
         }
+    }
+
+    public void StopVideo()
+    {
+        camTexture.Stop();
     }
     
 }

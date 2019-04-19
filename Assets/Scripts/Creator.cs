@@ -7,26 +7,24 @@ using ZXing.Common;
 
 [RequireComponent(typeof(RawImage))]
 public class Creator : MonoBehaviour {
-    [SerializeField] private BarcodeFormat format = BarcodeFormat.QR_CODE;
-    [SerializeField] private string data = "test";
     [SerializeField] private int width = 512;
     [SerializeField] private int height = 512;
     public RawImage cRawImage;
 
-    private void Start()
+    public void StartCode(BarcodeFormat format,string code)
     {
         // Generate the texture
-        Texture2D tex = GenerateBarcode(data, format, width, height);
+        Texture2D tex = GenerateBarcode(code, format, width, height);
         // Setup the RawImage
         cRawImage.texture = tex;
         cRawImage.rectTransform.sizeDelta = new Vector2(tex.width, tex.height);
-
     }
-    private Texture2D GenerateBarcode(string data, BarcodeFormat format, int width, int height)
+
+    public Texture2D GenerateBarcode(string data, BarcodeFormat format, int width, int height)
     {
         BarcodeWriter writer = new BarcodeWriter
         {
-            Format = BarcodeFormat.QR_CODE,
+            Format = format,
             Options = new EncodingOptions
             {
                 Height = height,
