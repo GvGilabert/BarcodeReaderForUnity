@@ -73,6 +73,7 @@ GameObject:
   - component: {fileID: 222215185015526660}
   - component: {fileID: 114454331209114594}
   - component: {fileID: 114999943737460820}
+  - component: {fileID: 114721934062651908}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -173,6 +174,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114721934062651908
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1972234615855942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda13d9c06cdb6948be3d83df656adfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114743010999026672
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -238,7 +250,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114454331209114594}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114721934062651908}
+        m_MethodName: ShowCodebar
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!222 &222215185015526660

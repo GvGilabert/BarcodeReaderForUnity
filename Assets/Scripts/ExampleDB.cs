@@ -19,7 +19,7 @@ namespace ExampleProject
             else
                 instance = this;
 
-            dbPath = "URI=file:" + Application.persistentDataPath + "/CodesDatabase.db";
+            dbPath = "URI=file:" + Application.persistentDataPath + "/BarCodesDatabase.db";
             CreateSchema();
         }
         

@@ -505,7 +505,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Texture: {fileID: 10305, guid: 0000000000000000f000000000000000, type: 0}
+  m_Texture: {fileID: 2800000, guid: a2f2fa1081d1eaa4ebc2432f4409e658, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -703,7 +703,8 @@ CanvasRenderer:
 --- !u!1 &659252536
 GameObject:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 1734862338761592, guid: 8e7ac7614cdd19f418d3ba6924854d5e,
+    type: 2}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 6
   m_Component:
@@ -713,9 +714,10 @@ GameObject:
   - component: {fileID: 659252541}
   - component: {fileID: 659252540}
   - component: {fileID: 659252538}
+  - component: {fileID: 659252543}
   m_Layer: 0
   m_Name: Manager
-  m_TagString: Untagged
+  m_TagString: Manager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -723,7 +725,8 @@ GameObject:
 --- !u!114 &659252537
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 114352629309225056, guid: 8e7ac7614cdd19f418d3ba6924854d5e,
+    type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 659252536}
   m_Enabled: 1
@@ -731,16 +734,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e7b45a4b18e58543ba5cc1c2df5cfb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  camTexture: {fileID: 0}
   text: {fileID: 1204522956}
   rawImg: {fileID: 586404993}
   scroll: {fileID: 155490052}
   inputF: {fileID: 1612307462821026, guid: 222f8b2ecd96ebb45b6a850afc8e64f7, type: 2}
   reading: 0
   btn: {fileID: 1209432861}
+  audioS: {fileID: 659252543}
 --- !u!114 &659252538
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 114682559893695488, guid: 8e7ac7614cdd19f418d3ba6924854d5e,
+    type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 659252536}
   m_Enabled: 1
@@ -748,15 +754,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c9fb818dda68f14c8238c356f6e2083, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  format: 2048
-  data: test
-  width: 512
-  height: 512
   cRawImage: {fileID: 586404993}
 --- !u!114 &659252539
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 114274069720761102, guid: 8e7ac7614cdd19f418d3ba6924854d5e,
+    type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 659252536}
   m_Enabled: 1
@@ -767,7 +770,8 @@ MonoBehaviour:
 --- !u!114 &659252540
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 114914179675764304, guid: 8e7ac7614cdd19f418d3ba6924854d5e,
+    type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 659252536}
   m_Enabled: 1
@@ -783,7 +787,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Texture: {fileID: 0}
+  m_Texture: {fileID: 10305, guid: 0000000000000000f000000000000000, type: 0}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -793,14 +797,16 @@ MonoBehaviour:
 --- !u!222 &659252541
 CanvasRenderer:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 222711356184397968, guid: 8e7ac7614cdd19f418d3ba6924854d5e,
+    type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 659252536}
   m_CullTransparentMesh: 0
 --- !u!224 &659252542
 RectTransform:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 224190133621427236, guid: 8e7ac7614cdd19f418d3ba6924854d5e,
+    type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 659252536}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -815,6 +821,101 @@ RectTransform:
   m_AnchoredPosition: {x: 43.633495, y: 287.74765}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!82 &659252543
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 659252536}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: ef00aba118ea03043b3efe85ab6fb33d, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &692369687
 GameObject:
   m_ObjectHideFlags: 0

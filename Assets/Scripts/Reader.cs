@@ -16,19 +16,17 @@ public class Reader : MonoBehaviour
     public GameObject inputF;
     public bool reading;
     public Text btn;
+    public AudioSource audioS;
 
     void Start()
     {
         //Start cam
         camTexture = new WebCamTexture();
-        //Show cam on texture
-        rawImg.texture = camTexture;
-        rawImg.material.mainTexture = camTexture;
-
         if (camTexture != null)
         {
             camTexture.Play();
         }
+        
         //Get elements from Db and list them
         ReadDbToScreen();
     }
@@ -46,9 +44,13 @@ public class Reader : MonoBehaviour
                 if (result != null)
                 {
                     text.text = result.Text;
-                    SwitchBtn();
-                    ExampleDB.instance.InsertCodes(result.BarcodeFormat.ToString(),result.Text);
+                    ExampleDB.instance.InsertCodes
+                                (result.BarcodeFormat.ToString(),result.Text);
+
                     ReadDbToScreen();
+                    audioS.Play();
+                    SwitchBtn();
+
                 }
             }
             catch (System.Exception ex)
@@ -58,10 +60,29 @@ public class Reader : MonoBehaviour
         }
     }
 
+    public void StartCam()
+    {
+        if (camTexture != null)
+        {
+            camTexture.Play();
+        }
+        //Show cam on texture
+        rawImg.texture = camTexture;
+        rawImg.material.mainTexture = camTexture;
+    }
+
     public void SwitchBtn()
     {
-        reading = !reading;
-        btn.text = (btn.text == "READ") ? "STOP" : "READ";
+        if (btn.text == "READ")
+        {
+            reading = true;
+            btn.text = "STOP";
+            StartCam();
+        }
+        else
+        {
+            StopVideo();
+        } 
     }
 
     public void ReadDbToScreen()
@@ -71,17 +92,22 @@ public class Reader : MonoBehaviour
             Destroy(item.gameObject);
         }
         var data = ExampleDB.instance.GetCodes(50);
-        for (int i = 0; i < data.GetLength(0); i++)
+        for (int i = 1; i < data.GetLength(0); i++)
         {
+            if (string.IsNullOrEmpty(data[i,0]))
+                return;
             GameObject go = Instantiate(inputF, scroll.transform);
             go.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = data[i, 1];
             go.transform.GetChild(1).GetComponent<Text>().text = data[i, 0];
+            go.transform.GetChild(0).GetComponent<CreateBarCodeBtn>().lateStart();
         }
     }
 
     public void StopVideo()
     {
         camTexture.Stop();
+        reading = false;
+        btn.text = "READ";
     }
     
 }
