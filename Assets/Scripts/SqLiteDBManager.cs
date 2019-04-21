@@ -7,9 +7,9 @@ using UnityEngine;
 namespace ExampleProject
 {
 
-    public class ExampleDB : MonoBehaviour
+    public class SqLiteDBManager : MonoBehaviour
     {
-        public static ExampleDB instance;
+        public static SqLiteDBManager instance;
         private string dbPath;
 
         private void Awake()

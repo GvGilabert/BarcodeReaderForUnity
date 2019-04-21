@@ -9,6 +9,7 @@ using ZXing.Common;
 public class Creator : MonoBehaviour {
 
     public RawImage cRawImage;
+    public Text txt;
 
     public void StartCode(BarcodeFormat format,string code)
     {
@@ -16,6 +17,7 @@ public class Creator : MonoBehaviour {
         Texture2D tex = GenerateBarcode(code, format,cRawImage.texture.width,cRawImage.texture.height);
         // Setup the RawImage
         cRawImage.texture = tex;
+        txt.text = code;
     }
 
     public Texture2D GenerateBarcode(string data, BarcodeFormat format, int width, int height)
