@@ -25,7 +25,7 @@ public class CreateBarCodeBtn : MonoBehaviour
 
     public void ShowCodebar()
     {
-        cam.StopVideo();
+        cam.StopCam();
         cr.StartCode(format,code.Trim());
     }
 }
