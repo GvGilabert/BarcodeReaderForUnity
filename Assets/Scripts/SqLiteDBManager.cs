@@ -4,8 +4,7 @@ using System.Data;
 using Mono.Data.Sqlite;
 using UnityEngine;
 
-namespace ExampleProject
-{
+
 
     public class SqLiteDBManager : MonoBehaviour
     {
@@ -19,7 +18,7 @@ namespace ExampleProject
             else
                 instance = this;
 
-            dbPath = "URI=file:" + Application.persistentDataPath + "/BarCodesDatabase.db";
+            dbPath = "URI=file:" + Application.persistentDataPath + "/CodesData.db";
             CreateSchema();
         }
         
@@ -32,16 +31,17 @@ namespace ExampleProject
                 {
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = "CREATE TABLE IF NOT EXISTS 'codes' ( " +
-                                      "  'id' INTEGER PRIMARY KEY, " +
-                                      "  'type' TEXT NOT NULL, " +
-                                      "  'code' TEXT NOT NULL" +
+                                      "  'Id' INTEGER PRIMARY KEY, " +
+                                      "  'Nombre' TEXT, " +
+                                      "  'Rubro' TEXT, " +
+                                      "  'Tipo' TEXT" +
                                       ");";
-                    var result = cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        public void InsertCodes(string type, string code)
+        public void InsertCodes(int userId, string nombre, string rubro, string tipo)
         {
             using (var conn = new SqliteConnection(dbPath))
             {
@@ -49,55 +49,102 @@ namespace ExampleProject
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "INSERT INTO codes (type, code) " +
-                                      "VALUES (@type, @code);";
+                    cmd.CommandText = "INSERT INTO codes ( Id, Nombre, Rubro, Tipo ) " +
+                                      "VALUES ( @id, @Nombre, @Rubro, @Tipo);";
 
                     cmd.Parameters.Add(new SqliteParameter
                     {
-                        ParameterName = "type",
-                        Value = type
+                        ParameterName = "id",
+                        Value = userId
                     });
-
                     cmd.Parameters.Add(new SqliteParameter
                     {
-                        ParameterName = "code",
-                        Value = code
+                        ParameterName = "Nombre",
+                        Value = nombre
                     });
-                    var result = cmd.ExecuteNonQuery();
+                    cmd.Parameters.Add(new SqliteParameter
+                    {
+                        ParameterName = "Rubro",
+                        Value = rubro
+                    });
+                    cmd.Parameters.Add(new SqliteParameter
+                    {
+                        ParameterName = "Tipo",
+                        Value = tipo
+                    });
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        public string[,] GetCodes(int limit)
+        public List<TestModel> GetCodes(int _id)
         {
-            using (var conn = new SqliteConnection(dbPath))
+        string query = "";
+        if (_id == 0)
+        { 
+            query = "SELECT * FROM codes;";
+        }
+        else
+        { 
+            query = "SELECT * FROM codes WHERE Id="+_id+";";
+        }
+        print(query);
+
+        using (var conn = new SqliteConnection(dbPath))
             {
                 conn.Open();
+
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "SELECT * FROM codes ORDER BY id DESC LIMIT @Count;";
-
-                    cmd.Parameters.Add(new SqliteParameter
-                    {
-                        ParameterName = "Count",
-                        Value = limit
-                    });
-
+                    cmd.CommandText = query;
                     var reader = cmd.ExecuteReader();
-                    string[,] result = new String [limit, 2];
-                    while (reader.Read())
+
+                List<TestModel> modelList = new List<TestModel>();
+                while (reader.Read())
                     {
-                        var id = reader.GetInt32(0);
-                        var typeOfCode = reader.GetString(1);
-                        var code = reader.GetString(2);
-                        result[id, 0] = typeOfCode;
-                        result[id, 1] = code;
+                        TestModel model = new TestModel()
+                        {
+                            Id = reader.GetInt32(0),
+                            Nombre = reader.GetString(1),
+                            Rubro = reader.GetString(2),
+                            Tipo = reader.GetString(3)
+                        };
+                    modelList.Add(model);
                     }
-                    return result;
+                    return modelList;
+                }
+            }
+        }
+
+        public void ClearData()
+        {
+            using (var conn = new SqliteConnection(dbPath))
+            {
+                conn.Open();
+
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "DELETE FROM codes;";
+                    cmd.ExecuteReader();
+                }
+            }
+        }
+
+        public void UpdateData(int id, string nombre, string rubro, string tipo )
+        {
+            using (var conn = new SqliteConnection(dbPath))
+            {
+                conn.Open();
+
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "UPDATE codes SET Nombre ='" + nombre + "', Rubro='" + rubro + "',Tipo='" + tipo + "' WHERE Id ="+id+";";
+                    cmd.ExecuteReader();
                 }
             }
         }
     }
 
-}
