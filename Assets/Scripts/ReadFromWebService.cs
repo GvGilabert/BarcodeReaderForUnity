@@ -9,9 +9,10 @@ using Newtonsoft.Json.Linq;
 public class TestModel
 {
     public int Id;
-    public string Nombre;
-    public string Rubro;
-    public string Tipo;
+    public string ProductCode;
+    public string Description;
+    public float Price;
+    public TestModel() { Price = 10; Description = "description"; }
 }
 
 public class ReadFromWebService : MonoBehaviour
@@ -19,7 +20,8 @@ public class ReadFromWebService : MonoBehaviour
     public static ReadFromWebService instance;
     public List<TestModel> data;
     public SqLiteDBManager dBManager;
-    private string ApiUrl = "http://localhost:52313/api/values/";
+    private string ApiUrl = "http://192.168.7.6:8866/api/products";
+    PopUpMsg popUpMsg;
 
     void Awake()
     {
@@ -27,8 +29,13 @@ public class ReadFromWebService : MonoBehaviour
         if (instance != null)
             Destroy(this.gameObject);
         else
-            instance = this;
-        dBManager = GetComponent<SqLiteDBManager>();   
+            instance = this;   
+    }
+
+    void Start()
+    {
+        dBManager = GetComponent<SqLiteDBManager>();
+        popUpMsg = GetComponent<PopUpMsg>();
     }
 
     public void UpdateDBFromCloud()
@@ -42,6 +49,17 @@ public class ReadFromWebService : MonoBehaviour
     public void UploadDb()
     {
         StartCoroutine(PostRequest(ApiUrl, SqLiteDBManager.instance.GetCodes(0)));
+    }
+
+    public void UploadRegister(TestModel data)
+    {
+        StartCoroutine(PostRequestOneReg(ApiUrl, data));
+    }
+
+    public void UpdateRegister(TestModel data)
+    {
+        string url = ApiUrl + "/" + data.Id;
+        StartCoroutine(PutRequest(url, data));
     }
  
 
@@ -57,7 +75,7 @@ public class ReadFromWebService : MonoBehaviour
 
             if (webRequest.isNetworkError)
             {
-                Debug.Log(pages[page] + ": Error: " + webRequest.error);
+                popUpMsg.NewMsg(pages[page] + ": Error: " + webRequest.error);
             }
             else
             {
@@ -65,13 +83,36 @@ public class ReadFromWebService : MonoBehaviour
                 //Insert data to db
                 foreach (var item in data)
                 {
-                    dBManager.InsertCodes(item.Id,item.Nombre,item.Rubro,item.Tipo);
+                    dBManager.InsertCodes(item.Id,item.ProductCode);
                 }
             }
             GetComponent<Reader>().ReadDbToScreen();
         }
     }
     IEnumerator PostRequest(string uri, List<TestModel> dbData)
+    {
+        foreach (var item in dbData)
+        {
+            var jsonString = JsonConvert.SerializeObject(item);
+            byte[] byteData = System.Text.Encoding.ASCII.GetBytes(jsonString.ToCharArray());
+
+            UnityWebRequest unityWebRequest = new UnityWebRequest(uri, "POST");
+            unityWebRequest.uploadHandler = new UploadHandlerRaw(byteData);
+            unityWebRequest.SetRequestHeader("Content-Type", "application/json");
+            yield return unityWebRequest.Send();
+
+            if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+            {
+                popUpMsg.NewMsg(unityWebRequest.error);
+            }
+            else
+            {
+                //popUpMsg.NewMsg("Form upload complete! Status Code: " + unityWebRequest.responseCode);
+            }
+        }
+         
+    }
+    IEnumerator PostRequestOneReg(string uri, TestModel dbData)
     {
         var jsonString = JsonConvert.SerializeObject(dbData);
         byte[] byteData = System.Text.Encoding.ASCII.GetBytes(jsonString.ToCharArray());
@@ -83,12 +124,31 @@ public class ReadFromWebService : MonoBehaviour
 
         if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
         {
-            Debug.Log(unityWebRequest.error);
+            popUpMsg.NewMsg(unityWebRequest.error);
         }
         else
         {
-            Debug.Log("Form upload complete! Status Code: " + unityWebRequest.responseCode);
-            Debug.Log(unityWebRequest);
+            popUpMsg.NewMsg("Form upload complete! Status Code: " + unityWebRequest.responseCode);
+        }
+    }
+
+    IEnumerator PutRequest(string uri, TestModel model)
+    {
+        var jsonString = JsonConvert.SerializeObject(model);
+        byte[] byteData = System.Text.Encoding.ASCII.GetBytes(jsonString.ToCharArray());
+
+        UnityWebRequest unityWebRequest = new UnityWebRequest(uri, "PUT");
+        unityWebRequest.uploadHandler = new UploadHandlerRaw(byteData);
+        unityWebRequest.SetRequestHeader("Content-Type", "application/json");
+        yield return unityWebRequest.Send();
+
+        if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+        {
+            popUpMsg.NewMsg(unityWebRequest.error);
+        }
+        else
+        {
+            popUpMsg.NewMsg("Form upload complete! Status Code: " + unityWebRequest.responseCode);
         }
     }
 }

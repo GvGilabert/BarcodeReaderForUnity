@@ -7,10 +7,8 @@ using UnityEngine.UI;
 public class Reader : MonoBehaviour
 {
 
-    public Text text;
     public GameObject scroll;
-    public GameObject inputF;
-    public AudioSource audioS;
+    public GameObject inputFieldPrefab;
 
     public void ReadDbToScreen()
     {
@@ -29,16 +27,16 @@ public class Reader : MonoBehaviour
         //Draw data on UI
         foreach (var item in SqLiteDBManager.instance.GetCodes(id))
         {
-            GameObject go = Instantiate(inputF, scroll.transform);
+            GameObject go = Instantiate(inputFieldPrefab, scroll.transform);
             //Fields on screen
             //ID
             go.transform.GetChild(0).GetComponent<Text>().text = item.Id.ToString();
             //NOMBRE
-            go.transform.GetChild(1).GetComponent<Text>().text = item.Nombre;
+            go.transform.GetChild(1).GetComponent<Text>().text = item.ProductCode;
             //RUBRO
-            go.transform.GetChild(2).GetComponent<Text>().text = item.Rubro;
+            //go.transform.GetChild(2).GetComponent<Text>().text = item.ProductCode;
             //TIPO
-            go.transform.GetChild(3).GetComponent<Text>().text = item.Tipo;
+            //go.transform.GetChild(3).GetComponent<Text>().text = item.body;
         }
     }
 

@@ -30,18 +30,43 @@ using UnityEngine;
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS 'codes' ( " +
-                                      "  'Id' INTEGER PRIMARY KEY, " +
-                                      "  'Nombre' TEXT, " +
-                                      "  'Rubro' TEXT, " +
-                                      "  'Tipo' TEXT" +
+                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS 'products' ( " +
+                                      "'Id' INTEGER PRIMARY KEY," +
+                                      "  'ProductCode' TEXT" +
                                       ");";
                     cmd.ExecuteNonQuery();
+                print("Creada");
                 }
             }
         }
 
-        public void InsertCodes(int userId, string nombre, string rubro, string tipo)
+        public void InsertCodes(int userId, string nombre)
+        {
+            using (var conn = new SqliteConnection(dbPath))
+            {
+            conn.Open();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "INSERT INTO products ( Id, ProductCode ) " +
+                                  "VALUES ( @Id, @ProductCode);";
+
+                cmd.Parameters.Add(new SqliteParameter
+                {
+                    ParameterName = "Id",
+                    Value = userId
+                });
+                cmd.Parameters.Add(new SqliteParameter
+                {
+                    ParameterName = "ProductCode",
+                    Value = nombre
+                });
+                cmd.ExecuteNonQuery();
+            }
+            }
+        }
+
+        public void InsertCodesLocal(string nombre)
         {
             using (var conn = new SqliteConnection(dbPath))
             {
@@ -49,46 +74,30 @@ using UnityEngine;
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "INSERT INTO codes ( Id, Nombre, Rubro, Tipo ) " +
-                                      "VALUES ( @id, @Nombre, @Rubro, @Tipo);";
+                    cmd.CommandText = "INSERT INTO products (ProductCode ) " +
+                                      "VALUES (@ProductCode);";
 
                     cmd.Parameters.Add(new SqliteParameter
                     {
-                        ParameterName = "id",
-                        Value = userId
-                    });
-                    cmd.Parameters.Add(new SqliteParameter
-                    {
-                        ParameterName = "Nombre",
+                        ParameterName = "ProductCode",
                         Value = nombre
-                    });
-                    cmd.Parameters.Add(new SqliteParameter
-                    {
-                        ParameterName = "Rubro",
-                        Value = rubro
-                    });
-                    cmd.Parameters.Add(new SqliteParameter
-                    {
-                        ParameterName = "Tipo",
-                        Value = tipo
                     });
                     cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        public List<TestModel> GetCodes(int _id)
+    public List<TestModel> GetCodes(int _id)
         {
         string query = "";
         if (_id == 0)
         { 
-            query = "SELECT * FROM codes;";
+            query = "SELECT * FROM products;";
         }
         else
         { 
-            query = "SELECT * FROM codes WHERE Id="+_id+";";
+            query = "SELECT * FROM products WHERE Id="+_id+";";
         }
-        print(query);
 
         using (var conn = new SqliteConnection(dbPath))
             {
@@ -106,9 +115,7 @@ using UnityEngine;
                         TestModel model = new TestModel()
                         {
                             Id = reader.GetInt32(0),
-                            Nombre = reader.GetString(1),
-                            Rubro = reader.GetString(2),
-                            Tipo = reader.GetString(3)
+                            ProductCode = reader.GetString(1),
                         };
                     modelList.Add(model);
                     }
@@ -126,13 +133,13 @@ using UnityEngine;
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "DELETE FROM codes;";
+                    cmd.CommandText = "DELETE FROM products;";
                     cmd.ExecuteReader();
                 }
             }
         }
 
-        public void UpdateData(int id, string nombre, string rubro, string tipo )
+        public void UpdateData(int id, string nombre)
         {
             using (var conn = new SqliteConnection(dbPath))
             {
@@ -141,7 +148,7 @@ using UnityEngine;
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "UPDATE codes SET Nombre ='" + nombre + "', Rubro='" + rubro + "',Tipo='" + tipo + "' WHERE Id ="+id+";";
+                    cmd.CommandText = "UPDATE products SET ProductCode ='" + nombre +"' WHERE Id ="+id+";";
                     cmd.ExecuteReader();
                 }
             }
