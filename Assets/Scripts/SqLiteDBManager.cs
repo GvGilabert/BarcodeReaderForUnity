@@ -18,7 +18,7 @@ using UnityEngine;
             else
                 instance = this;
 
-            dbPath = "URI=file:" + Application.persistentDataPath + "/CodesData.db";
+            dbPath = "URI=file:" + Application.persistentDataPath + "/DATA.db";
             CreateSchema();
         }
         
@@ -32,10 +32,10 @@ using UnityEngine;
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = "CREATE TABLE IF NOT EXISTS 'products' ( " +
                                       "'Id' INTEGER PRIMARY KEY," +
-                                      "  'ProductCode' TEXT" +
+                                      "  'ProductCode' TEXT," +
+                                      "'Upload' INTEGER" +
                                       ");";
                     cmd.ExecuteNonQuery();
-                print("Creada");
                 }
             }
         }
@@ -48,8 +48,8 @@ using UnityEngine;
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "INSERT INTO products ( Id, ProductCode ) " +
-                                  "VALUES ( @Id, @ProductCode);";
+                cmd.CommandText = "INSERT INTO products ( Id, ProductCode, Upload ) " +
+                                  "VALUES ( @Id, @ProductCode, @Upload);";
 
                 cmd.Parameters.Add(new SqliteParameter
                 {
@@ -60,6 +60,11 @@ using UnityEngine;
                 {
                     ParameterName = "ProductCode",
                     Value = nombre
+                });
+                cmd.Parameters.Add(new SqliteParameter
+                {
+                    ParameterName = "Upload",
+                    Value = Estados.Updated
                 });
                 cmd.ExecuteNonQuery();
             }
@@ -74,15 +79,20 @@ using UnityEngine;
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "INSERT INTO products (ProductCode ) " +
-                                      "VALUES (@ProductCode);";
+                    cmd.CommandText = "INSERT INTO products (ProductCode, Upload ) " +
+                                      "VALUES (@ProductCode, @Upload);";
 
                     cmd.Parameters.Add(new SqliteParameter
                     {
                         ParameterName = "ProductCode",
                         Value = nombre
                     });
-                    cmd.ExecuteNonQuery();
+                    cmd.Parameters.Add(new SqliteParameter
+                    {
+                        ParameterName = "Upload",
+                        Value = Estados.Local
+                    });
+                cmd.ExecuteNonQuery();
                 }
             }
         }
@@ -116,6 +126,7 @@ using UnityEngine;
                         {
                             Id = reader.GetInt32(0),
                             ProductCode = reader.GetString(1),
+                            Estado = (Estados)reader.GetInt32(2)
                         };
                     modelList.Add(model);
                     }
@@ -148,7 +159,7 @@ using UnityEngine;
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "UPDATE products SET ProductCode ='" + nombre +"' WHERE Id ="+id+";";
+                    cmd.CommandText = "UPDATE products SET ProductCode ='" + nombre + "', Upload=2" + " WHERE Id =" +id+";";
                     cmd.ExecuteReader();
                 }
             }

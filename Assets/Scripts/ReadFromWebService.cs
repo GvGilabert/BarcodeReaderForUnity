@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
+public enum Estados {Updated,Local,Modified }
 [System.Serializable]
 public class TestModel
 {
@@ -12,7 +14,14 @@ public class TestModel
     public string ProductCode;
     public string Description;
     public float Price;
+    public Estados Estado;
+
     public TestModel() { Price = 10; Description = "description"; }
+
+    public override string ToString()
+    {
+        return Id.ToString() + "," + ProductCode;
+    }
 }
 
 public class ReadFromWebService : MonoBehaviour
@@ -61,13 +70,12 @@ public class ReadFromWebService : MonoBehaviour
         string url = ApiUrl + "/" + data.Id;
         StartCoroutine(PutRequest(url, data));
     }
- 
 
     IEnumerator GetRequest(string uri)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
-            // Request and wait for the desired page.
+            // Request and wait for the desired data.
             yield return webRequest.SendWebRequest();
 
             string[] pages = uri.Split('/');
@@ -89,14 +97,32 @@ public class ReadFromWebService : MonoBehaviour
             GetComponent<Reader>().ReadDbToScreen();
         }
     }
+
     IEnumerator PostRequest(string uri, List<TestModel> dbData)
     {
-        foreach (var item in dbData)
+        int registros = 0;
+        //POSTS
+        foreach (var item in dbData.Where(o => (int)o.Estado == 1))
+        {
+            var jsonString = JsonConvert.SerializeObject(item);
+            byte[] byteData = System.Text.Encoding.ASCII.GetBytes(jsonString.ToCharArray());
+            UnityWebRequest unityWebRequest = new UnityWebRequest(uri, "POST");
+            unityWebRequest.uploadHandler = new UploadHandlerRaw(byteData);
+            unityWebRequest.SetRequestHeader("Content-Type", "application/json");
+            yield return unityWebRequest.Send();
+
+            if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+            { popUpMsg.NewMsg(unityWebRequest.error); }
+
+            registros++;
+        }
+        //PUTS
+        foreach (var item in dbData.Where(o=>(int)o.Estado==2))
         {
             var jsonString = JsonConvert.SerializeObject(item);
             byte[] byteData = System.Text.Encoding.ASCII.GetBytes(jsonString.ToCharArray());
 
-            UnityWebRequest unityWebRequest = new UnityWebRequest(uri, "POST");
+            UnityWebRequest unityWebRequest = new UnityWebRequest(uri+"/"+item.Id, "PUT");
             unityWebRequest.uploadHandler = new UploadHandlerRaw(byteData);
             unityWebRequest.SetRequestHeader("Content-Type", "application/json");
             yield return unityWebRequest.Send();
@@ -105,13 +131,22 @@ public class ReadFromWebService : MonoBehaviour
             {
                 popUpMsg.NewMsg(unityWebRequest.error);
             }
-            else
-            {
-                //popUpMsg.NewMsg("Form upload complete! Status Code: " + unityWebRequest.responseCode);
-            }
+            registros++;
         }
-         
+
+        if (registros > 0)
+        {
+            popUpMsg.NewMsg("Se subieron " + registros + " nuevos registros");
+        }
+
+        else
+        {
+            popUpMsg.NewMsg("No hay registros para subir");
+        }
+
+        UpdateDBFromCloud();
     }
+
     IEnumerator PostRequestOneReg(string uri, TestModel dbData)
     {
         var jsonString = JsonConvert.SerializeObject(dbData);

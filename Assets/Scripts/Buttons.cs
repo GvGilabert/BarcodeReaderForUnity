@@ -126,4 +126,10 @@ public class Buttons : MonoBehaviour
             UpdateApiRegister();
         }
     }
+
+    public void UploadChanges()
+    {
+        webServiceManager.UploadDb();
+        
+    }
 }

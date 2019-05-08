@@ -22,6 +22,10 @@ public class PopUpMsg : MonoBehaviour
             msg.text = msgText;
             popUpwindow.SetActive(true);
         }
+        else
+        {
+            msg.text = msgText;
+        }
     }
 
     public void Close()
