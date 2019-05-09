@@ -16,7 +16,6 @@ public class Reader : MonoBehaviour
     public GameObject rowPrefab;
     public int position;
     public int rowsPerPage;
-    double maxPage = 1;
 
     public void Start()
     {
@@ -25,7 +24,7 @@ public class Reader : MonoBehaviour
             Pool.Add(child.gameObject);
         }
         ReadDbToScreen();
-        maxPage = System.Math.Ceiling((float)itemsList.Count / rowsPerPage);
+        MoveDown();
     }
 
 
@@ -51,7 +50,7 @@ public class Reader : MonoBehaviour
     public void MoveDown()
     {
         int direction = 1;
-        if (position < maxPage)
+        if (position < System.Math.Ceiling((float)itemsList.Count / rowsPerPage))
         {
             position += direction;
             int skipValue = (position - 1) * rowsPerPage;
